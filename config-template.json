@@ -1,0 +1,26 @@
+{
+    "remote": {
+	"type": "cifs",
+	"volume": "\\\\nas\\volume",
+	"username": "fred",
+	"password": "alskdjaslkdjasld"
+    },
+    "store": {
+	"name": "thing.btrfs",
+	"size": 10,
+	"keyfile": "/usr/local/backup/key"
+    },
+    "strategy": {
+	"stages": 15,
+	"rotate": 72
+    },
+    "local": {
+	"directories": [
+	    {
+		"key": "etc",
+		"directory": "/etc"
+	    }
+	]
+    }
+}
+

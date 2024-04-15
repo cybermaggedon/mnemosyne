@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+
+from mnemosyne import __main__
+
+__main__.run()
+
