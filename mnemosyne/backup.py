@@ -4,6 +4,7 @@ import os
 import time
 import logging
 import shutil
+import secrets
 
 from .types import *
 from .remote import RemoteFS
@@ -88,7 +89,25 @@ class Backup:
 
         logger.info(" Verified successfully.")
 
-    def init(self):
+    def init_key(self):
+
+        if os.path.exists(self.store.keyfile):
+            logger.error(f"{self.store.keyfile} already exists!")
+            logger.error("Refusing to over-write existing keyfile")
+            raise RuntimeError("Keyfile already exists")
+
+        key = secrets.token_hex(32)
+
+        with open(self.store.keyfile, "w") as f:
+            f.write(key)
+
+        print(f"*** Keyfile has been written to {self.store.keyfile}")
+        print(f"*** This key is ESSENTIAL to be able to access your backup")
+        print(f"*** Make sure you keep a copy somewhere safe and secure!")
+
+        logger.info(f"Key initialiased and written to {self.store.keyfile}")
+
+    def init_store(self):
 
         with RemoteFS(self.remote) as fs:
 

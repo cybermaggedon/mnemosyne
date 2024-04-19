@@ -24,7 +24,9 @@ class RemoteFS:
         proc = subprocess.run(
             [
                 "mount.cifs", self.remote.volume, self.mnt,
+#                "-o", f"cache=none,user={self.remote.username},pass={self.remote.password}"
                 "-o", f"user={self.remote.username},pass={self.remote.password}"
+
             ]
         )
         

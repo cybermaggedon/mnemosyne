@@ -19,9 +19,13 @@ def run():
         prog="mnemosyne", description="Backup to remote filesystem"
     )
 
-    parser.add_argument("--init", 
-                        action="store_const", dest='action', const='init',
-                        help="Initial backup target")
+    parser.add_argument("--init-store", 
+                        action="store_const", dest='action', const='init-store',
+                        help="Initialise encrypted backup store")
+
+    parser.add_argument("--init-key", 
+                        action="store_const", dest='action', const='init-key',
+                        help="Initialise secure backup key")
 
     parser.add_argument("--backup", 
                         action="store_const", dest='action', const='backup',
@@ -34,10 +38,6 @@ def run():
     parser.add_argument("--verify-environment", 
                         action="store_const", dest='action', const='verify',
                         help="Verify environment")
-
-    parser.add_argument("--init-key", 
-                        action="store_const", dest='action', const='init-key',
-                        help="Initialise secure key")
 
     parser.add_argument(
         "--config", '-c', default="/usr/local/etc/mnemosyne/config.json",
@@ -53,14 +53,19 @@ def run():
 
         backup = Backup(config=args.config)
 
-        if args.action == "init":
-            logger.info("Initialising backup store...")
-            backup.init()
-            sys.exit(0)
-
         if args.action == "verify":
             logger.info("Verifying environment...")
             backup.verify()
+            sys.exit(0)
+
+        if args.action == "init-store":
+            logger.info("Initialising backup store...")
+            backup.init_store()
+            sys.exit(0)
+
+        if args.action == "init-key":
+            logger.info("Initialising secure key...")
+            backup.init_key()
             sys.exit(0)
 
         if args.action == "backup":
