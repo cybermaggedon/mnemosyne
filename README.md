@@ -2,7 +2,7 @@
 # `mnemosyne`
 
 This is a simple, opinionated backup system which works well with a Linux
-system backing up to a remote NAS system.  I'm using a Synologic. If this
+system backing up to a remote NAS system.  I'm using a Synology. If this
 code is useful to you, great.
 
 Data on the NAS is encrypted using a key file, so loss of NAS to theft is
@@ -61,7 +61,7 @@ There are number of design trade-offs in backup systems.
 | remote.password | For CIFS, specifies the remote volume password credential |
 | remote.block | For Block filesystem, specifies the block device to mount.  For best results, find out the UUID of the filesystem and use form UUID=xxx |
 | store.name | The name of the encrypted backup image.  Doesn't matter what you call it |
-| store.size | The initial size of the backup image.  This value affects the initialisation, once it is set up changing this value does nothing |
+| store.size | The initial size of the backup image in gigabytes.  This value affects the initialisation, once it is set up changing this value does nothing. |
 | store.keyfile | A file containing an encryption key for the store |
 | strategy.stages | The number of snapshots to keep.  The volume is periodically rotated to keep old data, this is the number of rotation snapshots to keep |
 | strategy.rotate | The period in hours on which snapshots are rotated |
@@ -74,7 +74,7 @@ There are number of design trade-offs in backup systems.
 {
     "remote": {
 	"type": "cifs",
-	"volume": "\\\\synologic.local\\volumename",
+	"volume": "\\\\synology.local\\volumename",
 	"username": "user123",
 	"password": "PASSWORD-GOES-HERE"
     },
@@ -157,7 +157,43 @@ options:
 
 - Create the configuration file
 - Run `mnemosyne --init-key` to create a random encryption key.
-- *Store the encryption key somewhere safe!*
+- **Store the encryption key somewhere safe!**
 - Run `mnemosyne --init-store` to mount the remote filesystem and initialise the encrypted store
 - Run `mnemosyne --backup` every time you want to run a backup.  The first backup will be a full transfer, subsequent backups will be quicker.
+
+## Accessing the backup, method 1
+
+- Run `mnemosyne --mount` which mounts the backup on a directory so you can access it directly.
+
+## Accessing the backup, manual method 2
+
+### Mount the remote file system
+
+```
+mkdir /tmp/mnt
+```
+
+e.g. for CIFS
+```
+mount.cifs \\\\synology.local\\volume1 /tmp/mnt -o username=u,password=xxx
+```
+
+```
+mount UUID=441c6328-515d-45c7-84d9-bffb3097fbac /tmp/mnt
+```
+
+### Access encrypted volume
+
+e.g. with encryption key at `/tmp/keyfile`...
+
+```
+cryptsetup open /tmp/mnt/image.btrfs backup1 --key-file /tmp/keyfile
+```
+
+### Mount encrypted volume
+
+```
+mkdir /tmp/vol
+mount /dev/mapper/backup1 /tmp/vol
+```
 
