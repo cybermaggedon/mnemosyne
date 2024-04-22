@@ -39,6 +39,12 @@ A backup consists of the following steps:
   remote backup by copying to the BTRFS filesystem.
 - At the end, everything is unmounted.
 
+## Installing
+
+```
+pip3 install .
+```
+
 ## Design decisions
 
 There are number of design trade-offs in backup systems.
