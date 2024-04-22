@@ -184,6 +184,8 @@ e.g. for CIFS
 mount.cifs \\\\synology.local\\volume1 /tmp/mnt -o username=u,password=xxx
 ```
 
+for a block device e.g. iSCSI...
+
 ```
 mount UUID=441c6328-515d-45c7-84d9-bffb3097fbac /tmp/mnt
 ```
@@ -202,4 +204,30 @@ cryptsetup open /tmp/mnt/image.btrfs backup1 --key-file /tmp/keyfile
 mkdir /tmp/vol
 mount /dev/mapper/backup1 /tmp/vol
 ```
+
+## iSCSI
+
+You can use a remote SAN by configuring the local iSCSI initiator.
+
+First, change `/etc/iscsi/iscsid.conf` to contain the remote credentials
+(user and password) and configure to use CHAP.
+
+You should then be able to probe the remote SAN:
+```
+iscsiadm -m discovery -t sendtargets -p remotehost.local
+```
+
+Having discovered the remote LUNs, you can login:
+```
+iscsiadm -m node --login
+```
+
+And check there's an open session:
+```
+iscsiadm -m session -o show
+```
+
+You can then mount find the remote disk, set up a partition label
+and a filesystem.  Having created the filesystem find out its UUID and
+use that in mounting a block device.
 
