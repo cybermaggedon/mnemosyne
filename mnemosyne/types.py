@@ -8,6 +8,9 @@ class Remote:
         if remote["type"] == "cifs":
             return CifsRemote(**remote)
 
+        elif remote["type"] == "block":
+            return BlockRemote(**remote)
+
         raise RuntimeError("Don't know remote type '" + remote["type"] + "'")
 
 @dataclass
@@ -16,6 +19,11 @@ class CifsRemote:
     volume: str
     username: str
     password: str
+
+@dataclass
+class BlockRemote:
+    type: str
+    device: str
 
 @dataclass
 class Store:

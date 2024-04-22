@@ -109,7 +109,7 @@ class Backup:
 
     def init_store(self):
 
-        with RemoteFS(self.remote) as fs:
+        with RemoteFS.init(self.remote) as fs:
 
             encrypted_store = fs.mount_point() + "/" + self.store.name
 
@@ -131,7 +131,7 @@ class Backup:
 
     def backup(self):
 
-        with RemoteFS(self.remote) as fs:
+        with RemoteFS.init(self.remote) as fs:
 
             encrypted_store = fs.mount_point() + "/" + self.store.name
 
@@ -152,7 +152,7 @@ class Backup:
 
         logger.info("Mounting backup target...")
 
-        with RemoteFS(self.remote) as fs:
+        with RemoteFS.init(self.remote) as fs:
 
             encrypted_store = fs.mount_point() + "/" + self.store.name
 
